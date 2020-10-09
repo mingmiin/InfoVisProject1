@@ -48,7 +48,6 @@ function drawTooltip(d) {
 			.classed("hidden",false)
 			.style("left", xPosition + "px")
 			.style("top", yPosition + "px")
-			.style("fill-opacity" ,"0.5")
 			.text(d.properties.Name);
 }
 
@@ -68,6 +67,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 										.append("path")
                                         .attr("d",geoPath)
                                         .style("stroke","white")
+                                        .style("stroke-width","0.3")
                                         .style("fill",function(d){
                                         	var returnColor;
                                         	if(d.properties.Name =="ALJUNIED"){returnColor ="1C82B5";}
@@ -77,7 +77,8 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                         })
                                         .classed("area",true)
                                         .on('mouseover', function(d) {
-                                            d3.select(this).classed("highlight",true);
+                                            d3.select(this)
+                                            .classed("highlight",true)
                                             drawTooltip(d);})
                                         .on('mouseout',mouseout);
 });
