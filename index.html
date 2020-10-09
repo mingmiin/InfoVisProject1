@@ -57,7 +57,7 @@ function mouseout() {
 }
 
 //sg plan area 20170903.json electoral-boundary-dataset.json
-d3.json("electoral-boundary-dataset - original.json", function(sg) {
+d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		var projection = d3.geoMercator().fitSize([panelWidth,panelHeight],sg),
 				geoPath = d3.geoPath(projection);
 
