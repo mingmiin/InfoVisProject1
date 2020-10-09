@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+		<title>Singapore Planning Area</title>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="//d3js.org/topojson.v1.min.js"></script>
+		<script src="https://d3js.org/d3-geo.v1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+		<div id="tooltip" class="hidden">
+			<p><span id="value"></p>
+		</div>
+<script>
+var margin = {top: 10, right: 10, bottom: 10, left: 10},
+		padding = {top: 10, right: 10, bottom: 10, left: 10},
+		vizWidth = 1400,
+		vizHeight = 700,
+		plotWidth = vizWidth - margin.left - margin.right,
+		plotHeight = vizHeight - margin.top - margin.bottom,
+		panelWidth = plotWidth - padding.left - padding.right,
+		panelHeight = plotHeight - padding.top - padding.bottom;
+
+var viz = d3.select("body").append("svg")
+						.classed("viz",true)
+    				.attr("width", vizWidth)
+    				.attr("height", vizHeight);
+
+var plot = viz.append("g")
+		.attr("class","plot")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var panel = plot.append("g")
+		.attr("class","panel")
+    .attr("transform", "translate(" + padding.left + "," + padding.top + ")");
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("display", "none");
+
+//Important Functions
+function drawTooltip(d) {
+		console.log(d);
+		var xPosition = d3.event.pageX;
+    var yPosition = d3.event.pageY;
+
+		d3.select("#tooltip")
+			.classed("hidden",false)
+			.style("left", xPosition + "px")
+			.style("top", yPosition + "px")
+			.text(d.properties.Name);
+}
+
+function mouseout() {
+	d3.select("#tooltip").classed("hidden", true);
+	d3.select(this).classed("highlight",false)
+}
+
+//sg plan area 20170903.json electoral-boundary-dataset.json
+d3.json("electoral-boundary-dataset - original.json", function(sg) {
+		var projection = d3.geoMercator().fitSize([panelWidth,panelHeight],sg),
+				geoPath = d3.geoPath(projection);
+
+		var areas = panel.selectAll("path")
+										.data(sg.features)
+										.enter()
+										.append("path")
+                                        .attr("d",geoPath)
+                                        .classed("area",true)
+                                        .on('mouseover', function(d) {
+                                            d3.select(this).classed("highlight",true);
+                                            drawTooltip(d);})
+                                        .on('mouseout',mouseout);
+});
+
+
+
+    
+    </script>
+</body>
+    
+
+    
+</html>
