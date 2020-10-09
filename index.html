@@ -66,9 +66,19 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 										.enter()
 										.append("path")
                                         .attr("d",geoPath)
+                                        .style("stroke","white")
+                                        .style("stroke-width","0.3")
+                                        .style("fill",function(d){
+                                        	var returnColor;
+                                        	if(d.properties.Name =="ALJUNIED"){returnColor ="1C82B5";}
+                                        	else if(d.properties.Name =="SENGKANG"){returnColor ="1C82B5";}
+                                        	else {returnColor ="#9E2222";}
+                                        	return returnColor;
+                                        })
                                         .classed("area",true)
                                         .on('mouseover', function(d) {
-                                            d3.select(this).classed("highlight",true);
+                                            d3.select(this)
+                                            .classed("highlight",true)
                                             drawTooltip(d);})
                                         .on('mouseout',mouseout);
 });
