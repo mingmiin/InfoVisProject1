@@ -1,70 +1,72 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 		<title>Singapore GE 2020</title>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="//d3js.org/topojson.v1.min.js"></script>
 		<script src="https://d3js.org/d3-geo.v1.min.js"></script>
-		<link rel="stylesheet" href="styles.css">
-		<link rel="icon" href="favicon.ico" type="image/x-icon"/>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <link rel="stylesheet" type="text/css" href="styles.css">		
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Singapore Planning Area</title>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="//d3js.org/topojson.v1.min.js"></script>
-    <script src="https://d3js.org/d3-geo.v1.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="style.css">
-
-      <style>
-          *{
-              padding:10px;
-          }
-          li{
-            list-style-type:none;
-          }
-          ul{
-              padding-left: 0;
-              margin:0;
-          }
-          .scrollable-menu {
-            height: auto;
-            max-height: 200px;
-            overflow-x: hidden;
-        }
-
-      </style>
-
+    <style>
+      *{
+        padding:10px;
+       }
+      li{
+        list-style-type:none;
+      }
+      ul{
+        padding-left: 0;
+        margin:0;
+      }
+      #tooltip
+      {
+        position: absolute;
+        padding-top:5px;
+        padding-bottom: 5px;
+        width: 100px;
+        height: 40px;
+        background-color: #01020d;
+        opacity: 0.75;
+        font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+        font-size:11px;
+        color:white;
+        text-align: center;
+      }
+      .scrollable-menu {
+        height: auto;
+        max-height: 200px;
+        overflow-x: hidden;
+      }
+    </style> 
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row">
+    <div class="header">
         <h2>Minister Tracker</h2>
-    </div>
-    <div class="row">
-        <div id="tooltip" class="hidden">
-             <p><span id="value"/></p>
-        </div>
-
     </div>
     <div class="row">
         <div class="col-8 mapview">
         </div>
         <div class="col-4">
             <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Your Constituency
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <ul class="grcs scrollable-menu"></ul>
-              </div>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Your Constituency
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <ul class="grcs scrollable-menu"></ul>
+                </div>
             </div>
             <div>
               <p class="line"></p>
             </div>
+        </div>
+          <div id="tooltip" class="hidden">
+             <p><span id="value"/></p>
         </div>
     </div>
 </div>
@@ -116,7 +118,7 @@ function drawTooltip(d) {
 function mouseout() {
 	d3.select("#tooltip").classed("hidden", true);
 	d3.select(this).classed("highlight",false)
-     .style("fill-opacity","1");
+     .style("fill-opacity","0.85");
 }
 
 //sg plan area 20170903.json electoral-boundary-dataset.json
@@ -139,11 +141,12 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                         	else {returnColor ="9E2222";}
                                         	return returnColor;
                                         })
+                                        .style("fill-opacity","0.85")
                                         .classed("area",true)
                                         .on('mouseover', function(d) {
                                             d3.select(this)
                                             .classed("highlight",true)
-                                            .style("fill-opacity","0.75")
+                                            .style("fill-opacity","1")
                                             //.style("stroke","1c1d26")
                                        		//.style("stroke-width","3")
                                             drawTooltip(d);})
