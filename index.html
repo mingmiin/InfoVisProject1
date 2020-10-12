@@ -105,22 +105,22 @@ var div = d3.select("body").append("div")
 
 //Important Functions
 function drawTooltip(d) {
-		var xPosition = d3.event.pageX;
-        var yPosition = d3.event.pageY;
+//        mel: i added some offset so that the tooltip is less annoying
+		var xPosition = d3.event.pageX+20; 
+        var yPosition = d3.event.pageY-20;
 
 		d3.select("#tooltip")
 			.classed("hidden",false)
 			.style("left", xPosition + "px")
 			.style("top", yPosition + "px")
 			.text(d.properties.Name);
-
 }
 
-function mouseout() {
-	d3.select("#tooltip").classed("hidden", true);
-	d3.select(this).classed("highlight",false)
-     .style("fill-opacity","0.85");
-}
+//function mouseout() {
+//	d3.select("#tooltip").classed("hidden", true);
+//	d3.select(this).classed("highlight",false)
+//     .style("fill-opacity","0.85");
+//}
 
 //sg plan area 20170903.json electoral-boundary-dataset.json
 d3.json("electoral-boundary-dataset-original.json", function(sg) {
@@ -151,13 +151,17 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                             //.style("stroke","1c1d26")
                                        		//.style("stroke-width","3")
                                             drawTooltip(d);})
-                                        .on('mouseout click', function(d) {
-                                            if (event.type === 'mouseout') {
-                                                mouseout;
-                                            } else if (event.type === 'click'){
-                                                showList(d.properties.Name);
-                                            }
-                                        } )
+                                        .on('mouseout', function(d) {
+                                        	d3.select(this)
+                                               .classed("hidden", true)
+	                                           .classed("highlight",false)
+                                                .style("fill-opacity","0.85")
+                                        })
+                                        .on('click', function(d){
+                                            showList(d.properties.Name)
+
+                                        })
+
 });
 
         var mydata; // declare as a global variable first! so it can be used outside of functions
