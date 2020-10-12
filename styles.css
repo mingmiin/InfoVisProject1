@@ -1,11 +1,14 @@
 body {
   background-color: white;
 }
+
 *{
   padding:10px;
  }
 li{
   list-style-type:none;
+  padding-left: 0;
+
 }
 ul{
   padding-left: 0;
@@ -18,11 +21,12 @@ ul{
 }
 #tooltip
 {
-	position: absolute;
-	padding-top:5px;
-	padding-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
 	width: 100px;
-	height: 30px;
+	height: 40px;
 	background-color: #01020d;
 	opacity: 0.75;
 	font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
@@ -31,3 +35,4 @@ ul{
 	text-align: center;
 }
 
+    

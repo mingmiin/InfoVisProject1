@@ -4,89 +4,87 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<title>Singapore GE 2020</title>
-		<script src="https://d3js.org/d3.v4.min.js"></script>
-		<script src="//d3js.org/topojson.v1.min.js"></script>
-		<script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    <title>Singapore GE 2020</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    
     <link rel="stylesheet" type="text/css" href="styles.css">		
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <style>
-      *{
-        padding:10px;
-       }
-      li{
-        list-style-type:none;
-      }
-      ul{
-        padding-left: 0;
-        margin:0;
-      }
-      #tooltip
-      {
-        position: absolute;
-        padding-top:5px;
-        padding-bottom: 5px;
-        width: 100px;
-        height: 40px;
-        background-color: #01020d;
-        opacity: 0.75;
-        font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
-        font-size:11px;
-        color:white;
-        text-align: center;
-      }
-      .scrollable-menu {
-        height: auto;
-        max-height: 200px;
-        overflow-x: hidden;
-      }
+        .dropdown-toggle{
+            width:80%
+        }
+        .line{
+            padding-top:0;
+        }
+        .grcTitle{
+            padding-bottom:0px;
+            font-weight: bold;
+            font-size:1.5em;
+        }
+        .overflow-auto{
+            height:400px;
+            padding:0px;
+            width:100%;
+            overflow-y: scroll; 
+        }
+        .overflow-auto::-webkit-scrollbar {
+          display: none;
+        }
+
     </style> 
 </head>
+    
 <body>
+<div class="header">
+    <h2>Minister Tracker</h2>
+</div>
 <div class="container-fluid">
-    <div class="header">
-        <h2>Minister Tracker</h2>
-    </div>
     <div class="row">
-        <div class="col-8 mapview">
+        <div class="col-2">ZY's column for ministerial ranking</div>
+        <div class="col-7 mapview">
         </div>
-        <div class="col-4">
+        <div class="col-3">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Your Constituency
+                Select Your Constituency
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <ul class="grcs scrollable-menu"></ul>
                 </div>
             </div>
-            <div>
-              <p class="line"></p>
+            <div class='descriptionContainer'>
+              <p class="grcTitle"></p>
+                <div class='overflow-auto'><p class="line"></p></div>
             </div>
         </div>
-          <div id="tooltip" class="hidden">
-             <p><span id="value"/></p>
-        </div>
+          <div id="tooltip" class="hidden" onclick="showListTooltip()"></div>
+    </div>
+    <div class="row">
+        <!-- Doris' row here, within this div. -->
+        <div class="col-3">minister face</div>
+        <div class="col-3">minister info</div>
+        <div class="col-3">minister parliamentary ranking</div>
+        <div class="col-3">minister ranking #</div>
     </div>
 </div>
  
-    
-    
-    
 
 <script>
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
 		padding = {top: 10, right: 10, bottom: 10, left: 10},
-		vizWidth = 1000,
-		vizHeight = 500,
+		vizWidth = 980,
+		vizHeight = 490,
 		plotWidth = vizWidth - margin.left - margin.right,
 		plotHeight = vizHeight - margin.top - margin.bottom,
 		panelWidth = plotWidth - padding.left - padding.right,
 		panelHeight = plotHeight - padding.top - padding.bottom;
 
 var viz = d3.select(".mapview").append("svg")
-						.classed("viz",true)
+				    .classed("viz",true)
     				.attr("width", vizWidth)
     				.attr("height", vizHeight);
 
@@ -104,7 +102,6 @@ var div = d3.select("body").append("div")
 
 //Important Functions
 function drawTooltip(d) {
-		console.log(d);
 		var xPosition = d3.event.pageX;
         var yPosition = d3.event.pageY;
 
@@ -113,6 +110,7 @@ function drawTooltip(d) {
 			.style("left", xPosition + "px")
 			.style("top", yPosition + "px")
 			.text(d.properties.Name);
+
 }
 
 function mouseout() {
@@ -150,19 +148,37 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                             //.style("stroke","1c1d26")
                                        		//.style("stroke-width","3")
                                             drawTooltip(d);})
-                                        .on('mouseout', mouseout)
+                                        .on('mouseout click', function(d) {
+                                            if (event.type === 'mouseout') {
+                                                mouseout;
+                                            } else if (event.type === 'click'){
+                                                showList(d.properties.Name);
+                                            }
+                                        } )
 });
-    </script>
 
-      <script>
-      
-          function showList(text) {
-              document.querySelector('.line').innerHTML = text;
+        var mydata; // declare as a global variable first! so it can be used outside of functions
+        function showListTooltip() {
+              var grc=document.querySelector('#tooltip').innerHTML
+              outputListFormat(mydata[grc],grc);
             };
           
+          function showList(grc) {
+              outputListFormat(mydata[grc],grc);
+            };
+          
+    function outputListFormat(list,grc) {
+        var textContents = '';
+        for (i in list){
+            if (list[i]==undefined){continue;}
+            else {textContents+='<li>'+list[i]+'</li>';};
+        }
+        document.querySelector('.grcTitle').innerHTML = grc;
+        document.querySelector('.line').innerHTML = textContents;
+    }
           
             d3.json("grc.json", function(data){
-                var mydata = JSON.parse(data);
+                mydata = JSON.parse(data);
             
                 var dropdownText = '';
                 for (i in mydata){
@@ -171,11 +187,9 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                         if (mydata[i][j]==undefined){continue;}
                         else {textContents+='<li>'+mydata[i][j]+'</li>';};
                     }
-                    dropdownText += '<li><button class="btn btn-link" onclick="showList(\''+textContents+'\')">'+i+'</button></li>';
-                    
+                    dropdownText += '<li><button class="btn btn-link" onclick="showList(\''+i+'\')">'+i+'</button></li>';
                 }
                 document.querySelector('.grcs').innerHTML=dropdownText;
-
             });
           
       </script>
