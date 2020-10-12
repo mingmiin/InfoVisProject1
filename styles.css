@@ -1,6 +1,17 @@
 body {
   background-color: white;
 }
+.header{
+  font-family: 'Oswald', sans-serif;
+}
+#desc{
+  color:grey;
+  padding: 0;
+  padding-left: 10px;
+}
+a:link {
+  text-decoration: none;
+}
 
 *{
   padding:10px;
@@ -14,9 +25,10 @@ ul{
   padding-left: 0;
   margin:0;
 }
+
 .scrollable-menu {
   height: auto;
-  max-height: 200px;
+  max-height: 100px;
   overflow-x: hidden;
 }
 #tooltip
@@ -34,5 +46,3 @@ ul{
 	color:white;
 	text-align: center;
 }
-
-    
