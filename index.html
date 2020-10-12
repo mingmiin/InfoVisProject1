@@ -246,9 +246,9 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 	   	    `<tr>
 	   	    <td>
 	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="window.open(this.src)" 
-	     		 class="rounded-circle minister-img" style="width: 80%; height: auto;">
+	     		 class="rounded-circle minister-img" style="width: 80%; height: auto; cursor: pointer;">
 	   	    </td>
-	   	    <td style="font-size:12px" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> 
+	   	    <td style="font-size:12px; cursor: pointer;" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> 
 	   	    </tr>`
 		}
 		document.querySelector('#rankList').innerHTML=rankTextAll;
