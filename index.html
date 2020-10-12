@@ -8,6 +8,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" type="text/css" href="styles.css">	
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
@@ -38,7 +39,15 @@
         .overflow-auto::-webkit-scrollbar {
           display: none;
         }
-
+	.scrollable-rank {
+  	  height: auto;
+  	  max-height: 400px;
+  	  overflow-x: hidden;
+      	}
+        .minister-img {
+    	  width: 100%;
+    	  height: auto;
+        }
     </style> 
 </head>
     
@@ -49,8 +58,13 @@
 </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-3">ZY's column for ministerial ranking</div>
-        <div class="col-5 mapview"> </div>
+        <div class="col-2">
+	  <div style="text-align: center"> Ranking of MPs based on % of community projects completed and parliamentary presence </div>
+          <div class = "scrollable-rank">
+		  <table id="rankList"> </table>
+	  </div>
+	</div>
+        <div class="col-7 mapview"> </div>
         <div class="col-3">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -208,7 +222,6 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
           
             d3.json("grc.json", function(data){
                 mydata = JSON.parse(data);
-            
                 var dropdownText = '';
                 for (i in mydata){
                     var textContents = '';
@@ -222,7 +235,35 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
             });
           
       </script>
-    
+
+      <script>
+	    $(document).ready(function(){
+            d3.json("allMinisters.json", function(data){
+                ministersObj = JSON.parse(JSON.stringify(data));
+		var names_imgs_ratings = [];
+		for (var key in ministersObj) {
+		    if (ministersObj.hasOwnProperty(key)) {
+			names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating]); //['Lee', 'https://...', 0.99]
+			//console.log(key + ', '+ ministersObj[key][6].rating); //rating at the 6th index, need to update here if json format updated. TODO: Zhiyuan
+		    }
+		}
+		//sort by rating 
+		names_imgs_ratings = names_imgs_ratings.sort(function (a, b) { return b[2] - a[2]; }); //Descending order
+		var rankTextAll = '';				  
+		for(var i = 0; i < names_imgs_ratings.length; i++){
+		    rankTextAll += 
+	   	    `<tr>
+	   	    <td>
+	   	    <img src=` + names_imgs_ratings[i][1] + 'alt="" class="rounded-circle minister-img">' + `
+	   	    </td>
+	   	    <td style="font-size:12px">` + names_imgs_ratings[i][0] + `</td>
+	   	    </tr>`
+		}
+		
+		document.querySelector('#rankList').innerHTML=rankTextAll;
+            });
+	});
+      </script>
     
 <!--Scripts to get bootstrap to work-->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
