@@ -1,0 +1,45 @@
+Deadline: 18 Oct (Sunday)
+
+Melvin:
+1) Link maps onclick to update json data
+2) Add features for completed/not completed/not started (0,0.5,1)
+3) logic for progress bar
+4) edit constituency tasks to fixed height
+5) LANDING Page text
+
+
+Doris:
+1) Minister panel => for more info on ministers => separate div below entire viz
+2) Need to collect data for minister panel
+3) JSON:
+    key is minister name
+    2 values
+        name/grc
+        descriptionText
+        
+        {
+            {"Melvin Loh":
+                {
+                    "grc":"Bishan-Toa Payoh",
+                    "descriptionText":"CEO of MelCorp",
+                    "img":"//pathofimage",
+                    "party":"PAP",
+                    "presence":1,
+                    "rating":.7
+                }
+            },
+
+            ...
+        }
+                
+        # everyone's presence = 1 except for Josephine Teo (Jalan Besar) and Desmond Lee (West Coast). They are 5/6
+
+
+Ming Miin:
+1) when click on map, it will turn darker => to show that it had been selected.
+2) Scalable
+3) responsive => diff breakpoints
+
+ZY:
+1) Ranking on the left column
+
