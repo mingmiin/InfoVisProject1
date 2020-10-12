@@ -31,6 +31,11 @@ ul{
   max-height: 100px;
   overflow-x: hidden;
 }
+.scrollable-rank {
+  height: auto;
+  max-height: 400px;
+  overflow-x: hidden;
+}
 #tooltip
 {
     display: flex;

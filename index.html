@@ -39,15 +39,6 @@
         .overflow-auto::-webkit-scrollbar {
           display: none;
         }
-	.scrollable-rank {
-  	  height: auto;
-  	  max-height: 400px;
-  	  overflow-x: hidden;
-      	}
-        .minister-img {
-    	  width: 100%;
-    	  height: auto;
-        }
     </style> 
 </head>
     
@@ -58,13 +49,13 @@
 </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2">
+        <div class="col-3">
 	  <div style="text-align: center"> Ranking of MPs based on % of community projects completed and parliamentary presence </div>
           <div class = "scrollable-rank">
 		  <table id="rankList"> </table>
 	  </div>
 	</div>
-        <div class="col-7 mapview"> </div>
+        <div class="col-6 mapview"> </div>
         <div class="col-3">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -244,22 +235,22 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		for (var key in ministersObj) {
 		    if (ministersObj.hasOwnProperty(key)) {
 			names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating]); //['Lee', 'https://...', 0.99]
-			//console.log(key + ', '+ ministersObj[key][6].rating); //rating at the 6th index, need to update here if json format updated. TODO: Zhiyuan
+			//console.log(key + ', '+ ministersObj[key][6].rating); //KIV: rating at the 6th index, need to update here if json format updated. 
 		    }
 		}
 		//sort by rating 
 		names_imgs_ratings = names_imgs_ratings.sort(function (a, b) { return b[2] - a[2]; }); //Descending order
 		var rankTextAll = '';				  
-		for(var i = 0; i < names_imgs_ratings.length; i++){
+		for(var i = 0; i < names_imgs_ratings.length; i++){ //TODO: onclick events to present btm info
 		    rankTextAll += 
 	   	    `<tr>
 	   	    <td>
-	   	    <img src=` + names_imgs_ratings[i][1] + 'alt="" class="rounded-circle minister-img">' + `
+	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="window.open(this.src)" 
+	     		 class="rounded-circle minister-img" style="width: 80%; height: auto;">
 	   	    </td>
-	   	    <td style="font-size:12px">` + names_imgs_ratings[i][0] + `</td>
+	   	    <td style="font-size:12px" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> 
 	   	    </tr>`
 		}
-		
 		document.querySelector('#rankList').innerHTML=rankTextAll;
             });
 	});
