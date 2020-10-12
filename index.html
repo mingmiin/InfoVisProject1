@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Singapore GE 2020</title>
+    <title>Minister Tracker</title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
@@ -14,9 +14,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <style>
+        /* mel: later insert into styles.css  */
         .dropdown-toggle{
             width:100%;
         }
+        
+
         .line{
             padding-top:0;
         }
@@ -104,15 +107,15 @@ var div = d3.select("body").append("div")
 
 //Important Functions
 function drawTooltip(d) {
-		var xPosition = d3.event.pageX;
-        var yPosition = d3.event.pageY;
+//        mel: i added some offset so that the tooltip is less annoying
+		var xPosition = d3.event.pageX+20; 
+        var yPosition = d3.event.pageY-20;
 
 		d3.select("#tooltip")
 			.classed("hidden",false)
 			.style("left", xPosition + "px")
 			.style("top", yPosition + "px")
 			.text(d.properties.Name);
-
 }
 
 
@@ -171,6 +174,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                             .classed("highlight",true)
                                             .style("fill-opacity","1")
                                             drawTooltip(d);})
+
                                         .on('mouseout click', function(d) {
                                             if (event.type === 'mouseout') {
                                                 d3.select(this)
@@ -179,6 +183,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                                 showList(d.properties.Name)
                                             }
                                         } )
+
 });
 
         var mydata; // declare as a global variable first! so it can be used outside of functions
