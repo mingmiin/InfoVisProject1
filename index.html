@@ -15,7 +15,7 @@
 
     <style>
         .dropdown-toggle{
-            width:80%
+            width:80%;
         }
         .line{
             padding-top:0;
@@ -23,13 +23,14 @@
         .grcTitle{
             padding-bottom:0px;
             font-weight: bold;
-            font-size:1.5em;
+            font-size:1.0em;
         }
         .overflow-auto{
             height:400px;
             padding:0px;
             width:100%;
             overflow-y: scroll; 
+            font-size:0.75em;
         }
         .overflow-auto::-webkit-scrollbar {
           display: none;
@@ -44,9 +45,8 @@
 </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2">ZY's column for ministerial ranking</div>
-        <div class="col-7 mapview">
-        </div>
+        <div class="col-3">ZY's column for ministerial ranking</div>
+        <div class="col-5 mapview"> </div>
         <div class="col-3">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -76,8 +76,8 @@
 <script>
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
 		padding = {top: 10, right: 10, bottom: 10, left: 10},
-		vizWidth = 980,
-		vizHeight = 490,
+		vizWidth = 2200,
+		vizHeight = 1800,
 		plotWidth = vizWidth - margin.left - margin.right,
 		plotHeight = vizHeight - margin.top - margin.bottom,
 		panelWidth = plotWidth - padding.left - padding.right,
@@ -86,7 +86,8 @@ var margin = {top: 10, right: 10, bottom: 10, left: 10},
 var viz = d3.select(".mapview").append("svg")
 				    .classed("viz",true)
     				.attr("width", vizWidth)
-    				.attr("height", vizHeight);
+    				.attr("height", vizHeight)
+                    .call(responsivefy);
 
 var plot = viz.append("g")
 		.attr("class","plot")
@@ -113,11 +114,34 @@ function drawTooltip(d) {
 
 }
 
-function mouseout() {
-	d3.select("#tooltip").classed("hidden", true);
-	d3.select(this).classed("highlight",false)
-     .style("fill-opacity","0.85");
+
+function responsivefy(svg) {
+    // get container + svg aspect ratio
+    var container = d3.select(svg.node().parentNode),
+        width = parseInt(svg.style("width")),
+        height = parseInt(svg.style("height")),
+        aspect = width / height;
+
+    // add viewBox and preserveAspectRatio properties,
+    // and call resize so that svg resizes on inital page load
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+        .attr("perserveAspectRatio", "xMaxYMax")
+        .call(resize);
+
+    // to register multiple listeners for same event type, 
+    // you need to add namespace, i.e., 'click.foo'
+    // necessary if you call invoke this function for multiple svgs
+    // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+        var targetWidth = parseInt(container.style("width"));
+        svg.attr("width", targetWidth);
+        svg.attr("height", Math.round(targetWidth / aspect));
+    }
 }
+
 
 //sg plan area 20170903.json electoral-boundary-dataset.json
 d3.json("electoral-boundary-dataset-original.json", function(sg) {
@@ -139,20 +163,19 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                         	else {returnColor ="9E2222";}
                                         	return returnColor;
                                         })
-                                        .style("fill-opacity","0.85")
+                                        .style("fill-opacity","0.9")
                                         .classed("area",true)
                                         .on('mouseover', function(d) {
                                             d3.select(this)
                                             .classed("highlight",true)
                                             .style("fill-opacity","1")
-                                            //.style("stroke","1c1d26")
-                                       		//.style("stroke-width","3")
                                             drawTooltip(d);})
                                         .on('mouseout click', function(d) {
                                             if (event.type === 'mouseout') {
-                                                mouseout;
+                                                d3.select(this)
+                                                .style("fill-opacity","0.9");
                                             } else if (event.type === 'click'){
-                                                showList(d.properties.Name);
+                                                showList(d.properties.Name)
                                             }
                                         } )
 });
