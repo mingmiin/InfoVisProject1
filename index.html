@@ -6,7 +6,7 @@
 
     <title>Minister Tracker</title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="//d3js.org/topojson.v1.min.js"></script>
+<!--    <script src="//d3js.org/topojson.v1.min.js"></script>--> 
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet"> 
@@ -19,7 +19,6 @@
         .dropdown-toggle{
             width:100%;
         }
-        
 
         .line{
             padding-top:0;
@@ -39,6 +38,31 @@
         .overflow-auto::-webkit-scrollbar {
           display: none;
         }
+        
+        .dropdown-menu {
+            padding
+        }
+        .scrollable-menu{
+
+        }
+        .btn-link{
+            height:12px;
+        }
+        .listHeader{
+            font-weight: bold;
+            padding-top: 20px;
+        }
+        .listItem{
+            padding-left:1.5em;
+        }
+        .progress{
+            padding:0px;
+            width:100%;
+        }
+        .progressDiv{
+            display:none;   
+        }
+        
     </style> 
 </head>
     
@@ -52,7 +76,7 @@
         <div class="col-3">
 	  <div style="text-align: center"> Ranking of MPs based on % of community projects completed and parliamentary presence </div>
           <div class = "scrollable-rank">
-		  <table id="rankList"> </table>
+		  <table id="rankList"></table>
 	  </div>
 	</div>
         <div class="col-6 mapview"> </div>
@@ -67,6 +91,11 @@
             </div>
             <div class='descriptionContainer'>
               <p class="grcTitle"></p>
+                <div class="progressDiv">
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 20%" aria-valuenow="20%" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
                 <div class='overflow-auto'><p class="line"></p></div>
             </div>
         </div>
@@ -123,7 +152,6 @@ function drawTooltip(d) {
 			.text(d.properties.Name);
 }
 
-
 function responsivefy(svg) {
     // get container + svg aspect ratio
     var container = d3.select(svg.node().parentNode),
@@ -151,8 +179,6 @@ function responsivefy(svg) {
     }
 }
 
-
-//sg plan area 20170903.json electoral-boundary-dataset.json
 d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		var projection = d3.geoMercator().fitSize([panelWidth,panelHeight],sg),
 				geoPath = d3.geoPath(projection);
@@ -188,38 +214,60 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                                 showList(d.properties.Name)
                                             }
                                         } )
-
 });
 
-        var mydata; // declare as a global variable first! so it can be used outside of functions
-        function showListTooltip() {
-              var grc=document.querySelector('#tooltip').innerHTML
-              outputListFormat(mydata[grc],grc);
-            };
-          
-          function showList(grc) {
-              outputListFormat(mydata[grc],grc);
-            };
-          
+    var mydata; // declare as a global variable first! so it can be used outside of functions
+    function showListTooltip() {
+          var grc=document.querySelector('#tooltip').innerHTML
+          outputListFormat(mydata[grc],grc);
+        };
+
+      function showList(grc) {
+          outputListFormat(mydata[grc],grc);
+        };
+
     function outputListFormat(list,grc) {
         var textContents = '';
-        for (i in list){
-            if (list[i]==undefined){continue;}
-            else {textContents+='<li>'+list[i]+'</li>';};
+        if (list['completed'].length>0) {
+            textContents+='<li class="listHeader">Completed ('+list['completed'].length.toString()+' of '+(list['completed'].length+list['progress'].length+list['unstarted'].length).toString()+')</li>';
+            for (i in list['completed']){
+                textContents+='<li class="listItem">'+list['completed'][i]+'</li>';
+            };            
+        };
+        
+        if (list['progress'].length>0) {
+            textContents+='<li class="listHeader">In Progress</li>';
+            for (i in list['progress']){
+                textContents+='<li class="listItem">'+list['progress'][i]+'</li>';
+            };            
         }
+            
+        if (list['unstarted'].length>0) {
+            textContents+='<li class="listHeader">Unstarted</li>';
+            for (i in list['unstarted']){
+                textContents+='<li class="listItem">'+list['unstarted'][i]+'</li>';
+            };
+        }
+        var percentProgress=100*list['completed'].length/(list['completed'].length+list['progress'].length+list['unstarted'].length)
         document.querySelector('.grcTitle').innerHTML = grc;
         document.querySelector('.line').innerHTML = textContents;
+        
+        console.log(percentProgress.toString());
+        document.querySelector(".progress-bar").style.width = percentProgress.toString()+'%';
+        document.querySelector(".progress-bar").setAttribute('aria-valuenow',percentProgress.toString()+'%');
+        document.querySelector(".progressDiv").style.display = 'block';
     }
+
           
-            d3.json("grc.json", function(data){
+            d3.json("grc2.json", function(data){
                 mydata = JSON.parse(data);
                 var dropdownText = '';
                 for (i in mydata){
                     var textContents = '';
-                    for (j in i){
-                        if (mydata[i][j]==undefined){continue;}
-                        else {textContents+='<li>'+mydata[i][j]+'</li>';};
-                    }
+//                    for (j in i){
+//                        if (mydata[i][j]==undefined){continue;}
+//                        else {textContents+='<li>'+mydata[i][j]+'</li>';};
+//                    }
                     dropdownText += '<li><button class="btn btn-link" onclick="showList(\''+i+'\')">'+i+'</button></li>';
                 }
                 document.querySelector('.grcs').innerHTML=dropdownText;
