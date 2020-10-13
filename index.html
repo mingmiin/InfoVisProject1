@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Minister Tracker</title>
+    <title>MP Tracker</title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
@@ -19,8 +19,6 @@
         .dropdown-toggle{
             width:100%;
         }
-        
-
         .line{
             padding-top:0;
         }
@@ -44,8 +42,8 @@
     
 <body>
 <div class="header">
-    <h2>Minister Tracker</h2>
-    <p id="desc">Ensure that your ministers are working for you!</p>
+    <h2>MP Tracker</h2>
+    <p id="desc">Ensure that the members of parliaments are working for you!</p>
 </div>
 <div class="container-fluid">
     <div class="row">
@@ -117,6 +115,7 @@ function drawTooltip(d) {
 			.classed("hidden",false)
 			.style("left", xPosition + "px")
 			.style("top", yPosition + "px")
+            .style("visibility" ,"visible")
 			.text(d.properties.Name);
 }
 
@@ -176,15 +175,12 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                             .classed("highlight",true)
                                             .style("fill-opacity","1")
                                             drawTooltip(d);})
-
-                                        .on('mouseout click', function(d) {
-                                            if (event.type === 'mouseout') {
-                                                d3.select(this)
-                                                .style("fill-opacity","0.9");
-                                            } else if (event.type === 'click'){
-                                                showList(d.properties.Name)
-                                            }
-                                        } )
+                                         .on('mouseout', function(d) {
+                                           d3.select(this)
+                                          .style("fill-opacity","0.9");})
+                                        .on('click', function(d) {
+                                             showList(d.properties.Name)
+                                            })
 
 });
 
@@ -244,7 +240,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 	   	    `<tr>
 	   	    <td>
 	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="window.open(this.src)" 
-	     		 class="rounded-circle minister-img" style="width: 80%; height: auto; cursor: pointer;">
+	     		 class="rounded-circle minister-img">
 	   	    </td>
 	   	    <!--<td style="font-size:12px; cursor: pointer;" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> -->
 			<td style="font-size:12px; cursor: pointer;" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')">` + names_imgs_ratings[i][0]  + `</td>
