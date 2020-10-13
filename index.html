@@ -74,10 +74,7 @@
     </div>
     <div class="row">
         <!-- Doris' row here, within this div. -->
-        <div class="col-3">minister face</div>
-        <div class="col-3">minister info</div>
-        <div class="col-3">minister parliamentary ranking</div>
-        <div class="col-3">minister ranking #</div>
+        <table id="ministerInfo"></table>
     </div>
 </div>
  
@@ -234,7 +231,8 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		var names_imgs_ratings = [];
 		for (var key in ministersObj) {
 		    if (ministersObj.hasOwnProperty(key)) {
-			names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating]); //['Lee', 'https://...', 0.99]
+			//names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating]); //['Lee', 'https://...', 0.99]
+			names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating, ministersObj[key][1].designation, ministersObj[key][5].presence, ministersObj[key][4].meetsession]);  
 			//console.log(key + ', '+ ministersObj[key][6].rating); //KIV: rating at the 6th index, need to update here if json format updated. 
 		    }
 		}
@@ -248,13 +246,40 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="window.open(this.src)" 
 	     		 class="rounded-circle minister-img" style="width: 80%; height: auto; cursor: pointer;">
 	   	    </td>
-	   	    <td style="font-size:12px; cursor: pointer;" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> 
+	   	    <!--<td style="font-size:12px; cursor: pointer;" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> -->
+			<td style="font-size:12px; cursor: pointer;" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')">` + names_imgs_ratings[i][0]  + `</td>
 	   	    </tr>`
 		}
 		document.querySelector('#rankList').innerHTML=rankTextAll;
+		
+		<!--Default: 1st ranking minister info -->
+		ministerinfo = '';
+		ministerface = '<img src="'+ names_imgs_ratings[0][1] +'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
+		ministerinfo += `<tr><td>` + ministerface + `</td>
+					<td>` + names_imgs_ratings[0][3] + `</td>
+					<td width="10%">Parliamentary Presence:<br>`+ names_imgs_ratings[0][4]*100 + `%</td>
+					<td width="10%">Minister Ranking:<br>` + names_imgs_ratings[0][2]*100 + `%</td></tr>`;
+		document.querySelector('#ministerInfo').innerHTML= ministerinfo; 
             });
 	});
       </script>
+	  
+	  <script>
+	  	//doris - minister panel	
+		function getMinisterInfo(mpname) {
+        for (var key in ministersObj) {
+		    if (key == mpname) {
+			ministerinfo = '';
+			ministerface = '<img src="'+ministersObj[key][2].img+'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
+			ministerinfo += `<tr><td>` + ministerface + `</td>
+					<td>` + ministersObj[key][1].designation + `</td>
+					<td width="10%">Parliamentary Presence:<br>`+ ministersObj[key][5].presence*100 + `%</td>
+					<td width="10%">Minister Ranking:<br>` + ministersObj[key][6].rating*100 + `%</td></tr>`;
+			document.querySelector('#ministerInfo').innerHTML= ministerinfo; 		
+		    }
+		}
+    }
+	  </script>
     
 <!--Scripts to get bootstrap to work-->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
