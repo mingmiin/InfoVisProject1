@@ -176,13 +176,10 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                             drawTooltip(d,"visible")})
                                          .on('mouseout', function(d) {
                                            d3.select(this)
-                                           .style("fill-opacity","0.9")
                                            drawTooltip(d,"hidden")})
                                         .on('click', function(d) {
-                                            d3.select(this)
-                                            .style("fill-opacity","1")
-                                             showList(d.properties.Name)
-                                              drawTooltip(d,"hidden")
+                                            showList(d.properties.Name ,this)
+                                            drawTooltip(d,"hidden")
                                             })
 
 });
@@ -193,8 +190,10 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
               outputListFormat(mydata[grc],grc);
             };
           
-          function showList(grc) {
+          function showList(grc, a) {
               outputListFormat(mydata[grc],grc);
+               d3.select(a)
+               .style("fill-opacity","1");
             };
           
     function outputListFormat(list,grc) {
