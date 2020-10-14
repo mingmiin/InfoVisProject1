@@ -48,7 +48,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-3">
-	  <div style="text-align: center"> Ranking of MPs based on % of community projects completed and parliamentary presence </div>
+	  <div  id="rank-title" style="text-align: center"> Ranking of MPs based on % of community projects completed and parliamentary presence </div>
           <div class = "scrollable-rank">
 		  <table id="rankList"> </table>
 	  </div>
@@ -106,7 +106,7 @@ var div = d3.select("body").append("div")
     .style("display", "none");
 
 //Important Functions
-function drawTooltip(d) {
+function drawTooltip(d,e) {
 //        mel: i added some offset so that the tooltip is less annoying
 		var xPosition = d3.event.pageX+20; 
         var yPosition = d3.event.pageY-20;
@@ -115,7 +115,7 @@ function drawTooltip(d) {
 			.classed("hidden",false)
 			.style("left", xPosition + "px")
 			.style("top", yPosition + "px")
-            .style("visibility" ,"visible")
+            .style("visibility" ,e)
 			.text(d.properties.Name);
 }
 
@@ -173,13 +173,16 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                         .on('mouseover', function(d) {
                                             d3.select(this)
                                             .classed("highlight",true)
-                                            .style("fill-opacity","1")
-                                            drawTooltip(d);})
+                                            drawTooltip(d,"visible")})
                                          .on('mouseout', function(d) {
                                            d3.select(this)
-                                          .style("fill-opacity","0.9");})
+                                           .style("fill-opacity","0.9")
+                                           drawTooltip(d,"hidden")})
                                         .on('click', function(d) {
+                                            d3.select(this)
+                                            .style("fill-opacity","1")
                                              showList(d.properties.Name)
+                                              drawTooltip(d,"hidden")
                                             })
 
 });

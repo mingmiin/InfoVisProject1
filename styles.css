@@ -4,6 +4,9 @@ body {
 .header{
   font-family: 'Oswald', sans-serif;
 }
+#rank-title{
+   font-family: 'Oswald', sans-serif;
+}
 #desc{
   color:grey;
   padding: 0;
@@ -39,7 +42,7 @@ ul{
   overflow-x: hidden;
 }
 #rankList td { 
-    padding:0;
+    padding:0px;
 }
 #tooltip
 {
