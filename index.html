@@ -287,14 +287,13 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		//sort by rating 
 		names_imgs_ratings = names_imgs_ratings.sort(function (a, b) { return b[2] - a[2]; }); //Descending order
 		var rankTextAll = '';				  
-		for(var i = 0; i < names_imgs_ratings.length; i++){ //TODO: onclick events to present btm info
+		for(var i = 0; i < names_imgs_ratings.length; i++){
 		    rankTextAll += 
 	   	    `<tr>
 	   	    <td>
-	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="window.open(this.src)" 
+	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')" 
 	     		 class="rounded-circle minister-img" style="width: 80%; height: auto; cursor: pointer;">
 	   	    </td>
-	   	    <!--<td style="font-size:12px; cursor: pointer;" onclick="alert('Pending to link to onclick event')">` + names_imgs_ratings[i][0] + `</td> -->
 			<td style="font-size:12px; cursor: pointer;" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')">` + names_imgs_ratings[i][0]  + `</td>
 	   	    </tr>`
 		}
