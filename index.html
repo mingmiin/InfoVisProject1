@@ -172,10 +172,12 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                         .classed("area",true)
                                         .on('mouseover', function(d) {
                                             d3.select(this)
+                                            .style("fill-opacity","1")
                                             .classed("highlight",true)
                                             drawTooltip(d,"visible")})
                                          .on('mouseout', function(d) {
                                            d3.select(this)
+                                           .style("fill-opacity","0.9")
                                            drawTooltip(d,"hidden")})
                                         .on('click', function(d) {
                                             showList(d.properties.Name ,this)
