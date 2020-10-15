@@ -4,14 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Minister Tracker</title>
+    <title>MP Tracker</title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
 <!--    <script src="//d3js.org/topojson.v1.min.js"></script>--> 
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" type="text/css" href="styles.css">	
-    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="res/favicon.ico" type="image/x-icon"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <style>
@@ -22,14 +23,16 @@
 
         .line{
             padding-top:0;
+            height:400px;
+
         }
         .grcTitle{
             padding-bottom:0px;
+            margin-bottom:0px;
             font-weight: bold;
             font-size:1.0em;
         }
         .overflow-auto{
-            height:400px;
             padding:0px;
             width:100%;
             overflow-y: scroll; 
@@ -39,12 +42,6 @@
           display: none;
         }
         
-        .dropdown-menu {
-            padding
-        }
-        .scrollable-menu{
-
-        }
         .btn-link{
             height:12px;
         }
@@ -62,20 +59,109 @@
         .progressDiv{
             display:none;   
         }
+
+        .minister-img-small{
+            cursor:pointer;
+            border-radius: 50%;
+            height:60px;
+            width:60px;
+            padding:12px;
+            margin:0px;
+            object-fit: cover;
+        }
         
+        .minister-img-medium{
+            border-radius: 50%;
+            height:60px;
+            width:60px;
+            padding:5px;
+            margin:0px;
+            object-fit: cover;
+        }
+        
+        .minister-img-large{
+            border-radius: 50%;
+            height:180px;
+            width:180px;
+            padding:0px;
+            margin:0px;
+            object-fit: cover;
+        }
+        
+        .ministers{
+            padding-bottom:0px;
+            margin-bottom: 0px;
+            padding-top:0px;
+            margin-top: 0px;
+        }
+        
+        .apexcharts-canvas{
+            padding:0px;
+            margin:0px;
+        }
+        
+        .icons{
+            height:25px;
+            width:25px;
+            margin:0px;
+            padding:5px;
+        }
+        #face{
+            text-align: center;
+        }
+        #description{
+            padding-right:100px;
+        }
+        .middleSection{
+            height:68vh;
+        }
+        .header{
+            height:4vh;
+            padding-top:0px;
+        }
+        .bottomSection{
+            height:28vh;
+        }
+        body{
+            padding-top:0px;
+            margin-top:0px;
+        }
+        .dropdown-menu  {
+            height:510px;
+            width:95%;
+            
+        }
+        
+        .scrollable-menu {
+            max-height:500px;
+            width:100%;
+        }
+        
+        .scrollable-rank{
+            max-height:500px;
+        }
+
+        span{
+            padding:0px;
+        }
+        strong{
+            padding:0px;
+        }
+ 
     </style> 
 </head>
     
 <body>
-<div class="header">
-    <h2>Minister Tracker</h2>
-    <p id="desc">Ensure that your ministers are working for you!</p>
-</div>
+
 <div class="container-fluid">
-    <div class="row">
+    <div class="row header">
+        <h2>MP Tracker</h2>
+        <p id="desc"><br>Ensure that your members of parliament are working for you!</p>
+    </div>
+    <div class="row middleSection">
         <div class="col-3">
-	  <div style="text-align: center"> Ranking of MPs based on % of community projects completed and parliamentary presence </div>
-          <div class = "scrollable-rank">
+	  <div><strong><br><br>Ranked by MP Rating <br></strong></div>
+          <div class = "overflow-auto scrollable-rank">
 		  <table id="rankList"></table>
 	  </div>
 	</div>
@@ -94,7 +180,7 @@
                 <p class='ministers'></p>
                 <div class="progressDiv">
                     <div class="progress">
-                      <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 20%" aria-valuenow="20%" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progressGRC progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20%" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
                 <div class='overflow-auto'><p class="line"></p></div>
@@ -102,14 +188,91 @@
         </div>
           <div id="tooltip" class="hidden" onclick="showListTooltip()"></div>
     </div>
-    <div class="row">
-        <!-- Doris' row here, within this div. -->
-        <table id="ministerInfo"></table>
-    </div>
+        <div id="ministerInfo" class="row bottomSection">
+            <div id="face" class="col-2"></div>
+            <div id="description" class="col-5"></div>
+            <div id="stats1" class="col-2">
+                <span style="font-weight:bold;padding-left:0px">Parliamentary Presence </span><br>
+                <span id="numSessions"></span> of 6 sessions: <span id="percentSessions"></span>%<br>
+                <div class="progress"><div class="progressParliament progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20%" aria-valuemin="0" aria-valuemax="100"></div></div><br><br>
+                
+                <span style="font-weight:bold;padding-left:0px">Community Projects </span><br>
+                Completed (<span id="completedProj"></span> of <span id="totalProj"></span>): <span id="percentProj"></span>%<br>
+                <div class="progress"><div class="progressGRC2 progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20%" aria-valuemin="0" aria-valuemax="100"></div></div>
+            
+            </div>
+            <div id="radialChart" class="col-2"></div>
+        </div>
 </div>
- 
+
+    
+ <script>
+	  	//doris - minister panel	
+		function getMinisterInfo(mpname) {
+//            console.log(mpname);
+            for (var key in ministersObj) {
+                if (key == mpname) {
+                
+                percentProgress=parseFloat(percentProgressFunc(ministersObj[mpname]['grc'])).toFixed(1)
+                var list=mydata[ministersObj[mpname]['grc']];
+
+                ministerFace = '<img src="'+ministersObj[key].img+'" class="minister-img-large"/>';
+                    
+                ministerDescription= '<p><strong>'+key+'</strong><br>Designation: ' + ministersObj[key].designation
+                    + '<br>Party: ' + ministersObj[key].party
+                    + '<br>Constituent: ' + ministersObj[key].grc+'</p>';
+                
+                document.querySelector('#face').innerHTML= ministerFace;
+                document.querySelector('#description').innerHTML= ministerDescription;
+
+                var numSessions = Math.round(ministersObj[key].presence*6).toString();
+                var percentSessions = ministersObj[key].presence*100;
+                var completedProj = list['completed'].length.toString();
+                var totalProj = (list['completed'].length+list['progress'].length+list['unstarted'].length).toString();
+                var percentProj = parseFloat(percentProgress).toFixed(1);
+                    
+                document.querySelector('#numSessions').innerHTML= numSessions;
+                document.querySelector('#percentSessions').innerHTML= percentSessions;
+                document.querySelector('#completedProj').innerHTML= completedProj;
+                document.querySelector('#totalProj').innerHTML= totalProj;
+                document.querySelector('#percentProj').innerHTML= percentProj;
+                
+                document.querySelector(".progressParliament").style.width = percentSessions.toString()+'%';
+                document.querySelector(".progressGRC2").style.width = percentProgress.toString()+'%';
+
+                    
+                ministerRating=parseFloat(percentProgressFunc(ministersObj[mpname]['grc'])/2+ministersObj[key].presence*100/2).toFixed(1)
+                updateRadial(ministerRating);
+                }
+            }
+        }
+</script>
+    
 
 <script>
+    
+    function updateRadial(percentProgress){
+        document.querySelector("#radialChart").innerHTML='';
+        var options = {
+          series: [percentProgress],
+          chart: {
+          height: 200,
+          type: 'radialBar',
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '70%',
+            },            
+        },
+        },
+        colors: ['#5bc0de'],
+        labels: ['MP Rating'],
+        };
+        var chart = new ApexCharts(document.querySelector("#radialChart"), options);
+        chart.render();
+    };
+      
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
 		padding = {top: 10, right: 10, bottom: 10, left: 10},
 		vizWidth = 2200,
@@ -188,6 +351,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
                                         .attr("d",geoPath)
                                         .style("stroke","white")
                                         .style("stroke-width","0.3")
+                                        .style("cursor","pointer")
                                         .style("fill",function(d){
                                         	var returnColor;
                                         	if(d.properties.Name =="ALJUNIED"){returnColor ="1C82B5";}
@@ -217,44 +381,59 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
     var mydata; // declare as a global variable first! so it can be used outside of functions
     function showListTooltip() {
           var grc=document.querySelector('#tooltip').innerHTML
-          outputListFormat(mydata[grc],grc);
+          outputListFormat(grc);
         };
 
       function showList(grc) {
-          outputListFormat(mydata[grc],grc);
+          outputListFormat(grc);
         };
+    
+    function percentProgressFunc(grc){
+        var list=mydata[grc];
+        var percentProgress=100*list['completed'].length/(list['completed'].length+list['progress'].length+list['unstarted'].length);
+        return percentProgress;
+    }
 
-    function outputListFormat(list,grc) {
+    function outputListFormat(grc) {
+        var list=mydata[grc];
+        var percentProgress=percentProgressFunc(grc);
         var textContents = '';
+        
         if (list['completed'].length>0) {
-            textContents+='<li class="listHeader">Completed ('+list['completed'].length.toString()+' of '+(list['completed'].length+list['progress'].length+list['unstarted'].length).toString()+')</li>';
+            textContents+='<li class="listHeader"><img class="icons" src="res/complete.svg"/>Completed ('+list['completed'].length.toString()+' of '+(list['completed'].length+list['progress'].length+list['unstarted'].length).toString()+': '+ parseFloat(percentProgress).toFixed(1) +'%)</li>';
             for (i in list['completed']){
                 textContents+='<li class="listItem">'+list['completed'][i]+'</li>';
             };            
         };
         
         if (list['progress'].length>0) {
-            textContents+='<li class="listHeader">In Progress</li>';
+            textContents+='<li class="listHeader"><img class="icons" src="res/progress.svg"/>In Progress</li>';
             for (i in list['progress']){
                 textContents+='<li class="listItem">'+list['progress'][i]+'</li>';
             };            
         }
             
         if (list['unstarted'].length>0) {
-            textContents+='<li class="listHeader">Unstarted</li>';
+            textContents+='<li class="listHeader"><img class="icons" src="res/notStarted.svg"/>Unstarted</li>';
             for (i in list['unstarted']){
                 textContents+='<li class="listItem">'+list['unstarted'][i]+'</li>';
             };
         }
-        var percentProgress=100*list['completed'].length/(list['completed'].length+list['progress'].length+list['unstarted'].length)
         document.querySelector('.grcTitle').innerHTML = grc;
         document.querySelector('.line').innerHTML = textContents;
         
-        console.log(percentProgress.toString());
-        document.querySelector(".progress-bar").style.width = percentProgress.toString()+'%';
-        document.querySelector(".progress-bar").setAttribute('aria-valuenow',percentProgress.toString()+'%');
+        document.querySelector(".progressGRC").style.width = percentProgress.toString()+'%';
+//        document.querySelector(".progressGRC").setAttribute('aria-valuenow',percentProgress.toString()+'%');
         document.querySelector(".progressDiv").style.display = 'block';    
-        document.querySelector(".ministers").innerHTML='hellloooo';
+        
+        
+        members=mydata[grc]['members'];
+        ministerface=''
+
+        for (i in members){
+            ministerface += '<img src="'+ministersObj[members[i]].img+'" class="minister-img-small" onclick="getMinisterInfo(\''+members[i]+'\')"/>';
+        }
+        document.querySelector(".ministers").innerHTML=ministerface;
     }
 
           
@@ -291,45 +470,22 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		var rankTextAll = '';				  
 		for(var i = 0; i < names_imgs_ratings.length; i++){
 		    rankTextAll += 
-	   	    `<tr>
+	   	    `<tr style="font-size:12px; cursor: pointer;" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')">
 	   	    <td>
-	   	    <img src=` + names_imgs_ratings[i][1] + `alt="" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')" 
-	     		 class="rounded-circle minister-img" style="width: 80%; height: auto; cursor: pointer;">
+	   	    <img src=` + names_imgs_ratings[i][1] + ` class="minister-img-medium">
 	   	    </td>
-			<td style="font-size:12px; cursor: pointer;" onclick="getMinisterInfo('`+names_imgs_ratings[i][0] +`')">` + names_imgs_ratings[i][0]  + `</td>
+			<td>` + names_imgs_ratings[i][0]  + `</td>
 	   	    </tr>`
 		}
 		document.querySelector('#rankList').innerHTML=rankTextAll;
 		
 		<!--Default: 1st ranking minister info -->
-		ministerinfo = '';
-		ministerface = '<img src="'+ names_imgs_ratings[0][1] +'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
-		ministerinfo += `<tr><td>` + ministerface + `</td>
-					<td><b>` + names_imgs_ratings[0][3] + `</b><br>` + names_imgs_ratings[0][6] + `<br><br>` + names_imgs_ratings[0][5] + `</td>
-					<td width="10%">Parliamentary Presence:<br>`+ names_imgs_ratings[0][4]*100 + `%</td>
-					<td width="10%">Minister Ranking:<br>` + names_imgs_ratings[0][2]*100 + `%</td></tr>`;
-		document.querySelector('#ministerInfo').innerHTML= ministerinfo; 
+        getMinisterInfo(names_imgs_ratings[0][0]);
             });
 	});
-      </script>
-	  
-	  <script>
-	  	//doris - minister panel	
-		function getMinisterInfo(mpname) {
-        for (var key in ministersObj) {
-		    if (key == mpname) {
-			ministerinfo = '';
-			ministerface = '<img src="'+ministersObj[key].img+'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
-			ministerinfo += `<tr><td>` + ministerface + `</td>
-					<td><b>` + ministersObj[key].designation + `</b><br>` + ministersObj[key].party + `<br><br>` + ministersObj[key].meetsession + `</td>
-					<td width="10%">Parliamentary Presence:<br>`+ ministersObj[key].presence*100 + `%</td>
-					<td width="10%">Minister Ranking:<br>` + ministersObj[key].rating*100 + `%</td></tr>`;
-			document.querySelector('#ministerInfo').innerHTML= ministerinfo; 		
-		    }
-		}
-    }
-	  </script>
-    
+      </script>                    
+                
+                
 <!--Scripts to get bootstrap to work-->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
