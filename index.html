@@ -253,7 +253,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
         console.log(percentProgress.toString());
         document.querySelector(".progress-bar").style.width = percentProgress.toString()+'%';
         document.querySelector(".progress-bar").setAttribute('aria-valuenow',percentProgress.toString()+'%');
-        document.querySelector(".progressDiv").style.display = 'block';
+        document.querySelector(".progressDiv").style.display = 'block';    
         document.querySelector(".ministers").innerHTML='hellloooo';
     }
 
@@ -276,13 +276,13 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 
       <script>
 	    $(document).ready(function(){
-            d3.json("allMinisters.json", function(data){
+            d3.json("minister_new.json", function(data){
                 ministersObj = JSON.parse(JSON.stringify(data));
 		var names_imgs_ratings = [];
 		for (var key in ministersObj) {
 		    if (ministersObj.hasOwnProperty(key)) {
 			//names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating]); //['Lee', 'https://...', 0.99]
-			names_imgs_ratings.push([key, ministersObj[key][2].img, ministersObj[key][6].rating, ministersObj[key][1].designation, ministersObj[key][5].presence, ministersObj[key][4].meetsession]);  
+			names_imgs_ratings.push([key, ministersObj[key].img, ministersObj[key].rating, ministersObj[key].designation, ministersObj[key].presence, ministersObj[key].meetsession]);  
 			//console.log(key + ', '+ ministersObj[key][6].rating); //KIV: rating at the 6th index, need to update here if json format updated. 
 		    }
 		}
@@ -319,11 +319,11 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
         for (var key in ministersObj) {
 		    if (key == mpname) {
 			ministerinfo = '';
-			ministerface = '<img src="'+ministersObj[key][2].img+'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
+			ministerface = '<img src="'+ministersObj[key].img+'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
 			ministerinfo += `<tr><td>` + ministerface + `</td>
-					<td>` + ministersObj[key][1].designation + `</td>
-					<td width="10%">Parliamentary Presence:<br>`+ ministersObj[key][5].presence*100 + `%</td>
-					<td width="10%">Minister Ranking:<br>` + ministersObj[key][6].rating*100 + `%</td></tr>`;
+					<td>` + ministersObj[key].designation + `</td>
+					<td width="10%">Parliamentary Presence:<br>`+ ministersObj[key].presence*100 + `%</td>
+					<td width="10%">Minister Ranking:<br>` + ministersObj[key].rating*100 + `%</td></tr>`;
 			document.querySelector('#ministerInfo').innerHTML= ministerinfo; 		
 		    }
 		}
