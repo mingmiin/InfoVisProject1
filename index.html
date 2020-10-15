@@ -305,7 +305,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 		ministerinfo = '';
 		ministerface = '<img src="'+ names_imgs_ratings[0][1] +'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
 		ministerinfo += `<tr><td>` + ministerface + `</td>
-					<td>` + names_imgs_ratings[0][3] + `<br><br>` + names_imgs_ratings[0][5] + `</td>
+					<td><b>` + names_imgs_ratings[0][3] + `</b><br><br>` + names_imgs_ratings[0][5] + `</td>
 					<td width="10%">Parliamentary Presence:<br>`+ names_imgs_ratings[0][4]*100 + `%</td>
 					<td width="10%">Minister Ranking:<br>` + names_imgs_ratings[0][2]*100 + `%</td></tr>`;
 		document.querySelector('#ministerInfo').innerHTML= ministerinfo; 
@@ -321,7 +321,7 @@ d3.json("electoral-boundary-dataset-original.json", function(sg) {
 			ministerinfo = '';
 			ministerface = '<img src="'+ministersObj[key].img+'" class="rounded-circle minister-img" style="width: auto; height: 200px;" />';
 			ministerinfo += `<tr><td>` + ministerface + `</td>
-					<td>` + ministersObj[key].designation + `<br><br>` + ministersObj[key].meetsession + `</td>
+					<td><b>` + ministersObj[key].designation + `</b><br><br>` + ministersObj[key].meetsession + `</td>
 					<td width="10%">Parliamentary Presence:<br>`+ ministersObj[key].presence*100 + `%</td>
 					<td width="10%">Minister Ranking:<br>` + ministersObj[key].rating*100 + `%</td></tr>`;
 			document.querySelector('#ministerInfo').innerHTML= ministerinfo; 		
